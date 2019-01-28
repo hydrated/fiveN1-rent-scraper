@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/neighborhood999/fiveN1-rent-scraper"
+	rent "github.com/neighborhood999/fiveN1-rent-scraper"
 )
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,16 +13,21 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	if r.Method == "GET" {
-		options.Section = r.FormValue("section")
 		options.Area = r.FormValue("area")
-		options.RentPrice = r.FormValue("rentPrice")
+		options.Role = r.FormValue("role")
+		options.Other = r.FormValue("other")
 		options.Order = r.FormValue("order")
+		options.Shape = r.FormValue("shape")
+		options.Floor = r.FormValue("floor")
+		options.Option = r.FormValue("option")
+		options.HasImg = r.FormValue("hasImage")
+		options.Section = r.FormValue("section")
+		options.NotCover = r.FormValue("notCover")
+		options.RentPrice = r.FormValue("rentPrice")
 		options.OrderType = r.FormValue("orderType")
-		options.Kind, _ = strconv.Atoi(r.FormValue("kind"))
-		options.HasImg, _ = strconv.Atoi(r.FormValue("hasImage"))
-		options.Role, _ = strconv.Atoi(r.FormValue("role"))
-		options.NotCover, _ = strconv.Atoi(r.FormValue("notCover"))
 		options.Sex, _ = strconv.Atoi(r.FormValue("sex"))
+		options.Kind, _ = strconv.Atoi(r.FormValue("kind"))
+		options.FirstRow, _ = strconv.Atoi(r.FormValue("firstRow"))
 
 		url, err := rent.GenerateURL(options)
 		if err != nil {
@@ -37,7 +42,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		json := rent.ConvertToJSON(f.RentList)
 
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -49,5 +54,5 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", callbackHandler)
-	http.ListenAndServe(":8888", nil)
+	http.ListenAndServe(":8080", nil)
 }
